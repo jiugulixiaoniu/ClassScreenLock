@@ -1,0 +1,386 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:CCLS"
+                    xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+    
+    <!-- Metro UI 颜色定义 -->
+    <Color x:Key="MetroPrimaryColor">#FF0078D7</Color>
+    <Color x:Key="MetroSecondaryColor">#FF005A9E</Color>
+    <Color x:Key="MetroAccentColor">#FFD13438</Color>
+    <Color x:Key="MetroSuccessColor">#FF107C10</Color>
+    <Color x:Key="MetroWarningColor">#FFF2C811</Color>
+    <Color x:Key="MetroBackgroundColor">#FFF3F3F3</Color>
+    <Color x:Key="MetroSurfaceColor">#FFFFFFFF</Color>
+    <Color x:Key="MetroTextPrimaryColor">#FF000000</Color>
+    <Color x:Key="MetroTextSecondaryColor">#FF6D6D6D</Color>
+    <Color x:Key="MetroBorderColor">#FFCCCCCC</Color>
+    
+
+    
+    <!-- 画笔定义 -->
+    <SolidColorBrush x:Key="MetroPrimaryBrush" Color="{StaticResource MetroPrimaryColor}"/>
+    <SolidColorBrush x:Key="MetroSecondaryBrush" Color="{StaticResource MetroSecondaryColor}"/>
+    <SolidColorBrush x:Key="MetroAccentBrush" Color="{StaticResource MetroAccentColor}"/>
+    <SolidColorBrush x:Key="MetroSuccessBrush" Color="{StaticResource MetroSuccessColor}"/>
+    <SolidColorBrush x:Key="MetroWarningBrush" Color="{StaticResource MetroWarningColor}"/>
+    <SolidColorBrush x:Key="MetroBackgroundBrush" Color="{StaticResource MetroBackgroundColor}"/>
+    <SolidColorBrush x:Key="MetroSurfaceBrush" Color="{StaticResource MetroSurfaceColor}"/>
+    <SolidColorBrush x:Key="MetroTextPrimaryBrush" Color="{StaticResource MetroTextPrimaryColor}"/>
+    <SolidColorBrush x:Key="MetroTextSecondaryBrush" Color="{StaticResource MetroTextSecondaryColor}"/>
+    <SolidColorBrush x:Key="MetroTextLightBrush" Color="White"/>
+    <SolidColorBrush x:Key="MetroBorderBrush" Color="{StaticResource MetroBorderColor}"/>
+    
+    <!-- 窗口样式 -->
+    <Style x:Key="MetroWindowStyle" TargetType="{x:Type Window}">
+        <Setter Property="Background" Value="{StaticResource MetroBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource MetroTextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource CurrentConfigFontSize}"/>
+        <Setter Property="ResizeMode" Value="CanResize"/>
+        <Setter Property="WindowStyle" Value="SingleBorderWindow"/>
+    </Style>
+    
+    <!-- 按钮样式 -->
+    <Style x:Key="MetroButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{StaticResource MetroPrimaryBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="{StaticResource MetroPrimaryBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="12,6"/>
+        <Setter Property="Margin" Value="4"/>
+        <Setter Property="FontSize" Value="{DynamicResource CurrentConfigFontSize}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border" 
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="2">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource MetroSecondaryBrush}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource MetroSecondaryBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource MetroAccentBrush}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource MetroAccentBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#FFCCCCCC"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFCCCCCC"/>
+                            <Setter TargetName="contentPresenter" Property="TextElement.Foreground" Value="#FF888888"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- 菜单样式 -->
+    <Style x:Key="MetroMenuStyle" TargetType="{x:Type Menu}">
+        <Setter Property="Background" Value="{StaticResource MetroBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource MetroTextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource CurrentConfigFontSize}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="8,4"/>
+    </Style>
+    
+    <!-- 菜单项样式 -->
+    <Style x:Key="MetroMenuItemStyle" TargetType="{x:Type MenuItem}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource MetroTextPrimaryBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource CurrentConfigFontSize}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource MetroSecondaryBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!-- 分组框样式 -->
+    <Style x:Key="MetroGroupBoxStyle" TargetType="{x:Type GroupBox}">
+        <Setter Property="Background" Value="{StaticResource MetroBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource MetroTextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource CurrentConfigFontSize}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="BorderBrush" Value="{StaticResource MetroBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Margin" Value="0,0,0,10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GroupBox}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4,4,0,0"
+                                Padding="8,4">
+                            <ContentPresenter ContentSource="Header"/>
+                        </Border>
+                        <Border Grid.Row="1" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="0,0,4,4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- TextBlock样式 -->
+    <Style x:Key="MetroTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="{StaticResource MetroTextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource CurrentConfigFontSize}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    
+    <Style x:Key="MetroTextBlockBoldStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MetroTextBlockStyle}">
+        <Setter Property="FontWeight" Value="SemiBold"/>
+    </Style>
+    
+    <!-- CheckBox样式 -->
+    <Style x:Key="MetroCheckBoxStyle" TargetType="{x:Type CheckBox}">
+        <Setter Property="Foreground" Value="{StaticResource MetroTextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource CurrentConfigFontSize}"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Padding" Value="2"/>
+    </Style>
+    
+    <!-- StatusBar样式 -->
+    <Style x:Key="MetroStatusBarStyle" TargetType="{x:Type StatusBar}">
+        <Setter Property="Background" Value="{StaticResource MetroPrimaryBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="{DynamicResource CurrentConfigFontSize}"/>
+        <Setter Property="Padding" Value="4"/>
+    </Style>
+    
+    <!-- ScrollViewer样式 -->
+    <Style x:Key="MetroScrollViewerStyle" TargetType="{x:Type ScrollViewer}">
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="Padding" Value="2"/>
+    </Style>
+    
+    <!-- 分隔符样式 -->
+    <Style x:Key="MetroSeparatorStyle" TargetType="{x:Type Separator}">
+        <Setter Property="Background" Value="{StaticResource MetroBorderBrush}"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Height" Value="1"/>
+    </Style>
+    
+    <!-- 特殊按钮样式 - 警告按钮 -->
+    <Style x:Key="MetroWarningButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButtonStyle}">
+        <Setter Property="Background" Value="{StaticResource MetroWarningBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource MetroWarningBrush}"/>
+        <Setter Property="Foreground" Value="Black"/>
+    </Style>
+    
+    <!-- 特殊按钮样式 - 成功按钮 -->
+    <Style x:Key="MetroSuccessButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButtonStyle}">
+        <Setter Property="Background" Value="{StaticResource MetroSuccessBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource MetroSuccessBrush}"/>
+    </Style>
+    
+    <!-- 特殊按钮样式 - 危险按钮 -->
+    <Style x:Key="MetroDangerButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroButtonStyle}">
+        <Setter Property="Background" Value="{StaticResource MetroAccentBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource MetroAccentBrush}"/>
+    </Style>
+    
+    <!-- 网格布局样式 -->
+    <Style x:Key="MetroGridStyle" TargetType="{x:Type Grid}">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    
+    <!-- StackPanel样式 -->
+    <Style x:Key="MetroStackPanelStyle" TargetType="{x:Type StackPanel}">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+    
+    <!-- TextBox样式 -->
+    <Style x:Key="MetroTextBoxStyle" TargetType="{x:Type TextBox}">
+        <Setter Property="Background" Value="{StaticResource MetroSurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource MetroTextPrimaryBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource MetroBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="6"/>
+        <Setter Property="FontSize" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontSize}"/>
+        <Setter Property="FontFamily" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontFamily}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border x:Name="border" 
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="2">
+                        <ScrollViewer x:Name="PART_ContentHost" 
+                                      Margin="{TemplateBinding Padding}"
+                                      VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource MetroPrimaryBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource MetroPrimaryBrush}"/>
+                            <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#FFEEEEEE"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFCCCCCC"/>
+                            <Setter Property="Foreground" Value="#FF888888"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- ListView样式 -->
+    <Style x:Key="MetroListViewStyle" TargetType="{x:Type ListView}">
+        <Setter Property="Background" Value="{StaticResource MetroSurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource MetroTextPrimaryBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource MetroBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontSize" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontSize}"/>
+        <Setter Property="FontFamily" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontFamily}"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+    </Style>
+
+    <!-- DataGrid样式 -->
+    <Style x:Key="MetroDataGridStyle" TargetType="{x:Type DataGrid}">
+        <Setter Property="Background" Value="{StaticResource MetroSurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource MetroTextPrimaryBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource MetroBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontSize" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontSize}"/>
+        <Setter Property="FontFamily" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontFamily}"/>
+        <Setter Property="AlternatingRowBackground" Value="#FFF0F0F0"/>
+        <Setter Property="RowBackground" Value="White"/>
+        <Setter Property="HeadersVisibility" Value="Column"/>
+        <Setter Property="ColumnHeaderHeight" Value="30"/>
+        <Setter Property="RowHeight" Value="30"/>
+        <Setter Property="CanUserAddRows" Value="False"/>
+        <Setter Property="CanUserDeleteRows" Value="False"/>
+        <Setter Property="CanUserResizeColumns" Value="True"/>
+        <Setter Property="CanUserResizeRows" Value="False"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="SelectionMode" Value="Extended"/>
+        <Setter Property="SelectionUnit" Value="FullRow"/>
+        <Setter Property="GridLinesVisibility" Value="Horizontal"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource MetroBorderBrush}"/>
+    </Style>
+
+    <!-- ComboBox样式 -->
+    <Style x:Key="MetroComboBoxStyle" TargetType="{x:Type ComboBox}">
+        <Setter Property="Background" Value="{StaticResource MetroSurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource MetroTextPrimaryBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource MetroBorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="6"/>
+        <Setter Property="FontSize" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontSize}"/>
+        <Setter Property="FontFamily" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontFamily}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBox}">
+                    <Grid x:Name="templateRoot" SnapsToDevicePixels="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition MinWidth="30" Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="border" Grid.ColumnSpan="2" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2"/>
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="False" Margin="8,6,6,6" SnapsToDevicePixels="True" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        <ToggleButton Grid.Column="1" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource MetroComboBoxToggleButtonStyle}"/>
+                        <Popup x:Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" PopupAnimation="Slide" Placement="Bottom">
+                            <Themes:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{Binding ActualWidth, ElementName=templateRoot}">
+                                <Border x:Name="dropDownBorder" BorderBrush="{StaticResource MetroBorderBrush}" BorderThickness="1" Background="{StaticResource MetroSurfaceBrush}">
+                                    <ScrollViewer x:Name="DropDownScrollViewer">
+                                        <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
+                                            <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
+                                                <Rectangle x:Name="opaqueRect" Fill="{Binding Background, ElementName=dropDownBorder}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
+                                            </Canvas>
+                                            <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="True"/>
+                                        </Grid>
+                                    </ScrollViewer>
+                                </Border>
+                            </Themes:SystemDropShadowChrome>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource MetroPrimaryBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource MetroPrimaryBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#FFEEEEEE"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#FFCCCCCC"/>
+                            <Setter Property="Foreground" Value="#FF888888"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ComboBoxToggleButton样式 -->
+    <Style x:Key="MetroComboBoxToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="ClickMode" Value="Press"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border x:Name="border" Background="Transparent" BorderThickness="1,0,0,0" BorderBrush="{StaticResource MetroBorderBrush}" Padding="6,0">
+                        <Grid>
+                            <Path x:Name="arrow" Data="M0,0 L4,4 L8,0 Z" Fill="{StaticResource MetroTextPrimaryBrush}" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="arrow" Property="Data" Value="M0,4 L4,0 L8,4 Z"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource MetroPrimaryBrush}"/>
+                            <Setter TargetName="arrow" Property="Fill" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+</ResourceDictionary>

@@ -1,0 +1,222 @@
+﻿<Window x:Class="CCLS.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CCLS"
+        mc:Ignorable="d"
+        Title="班级屏幕锁管理系统" Height="700" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Style="{DynamicResource Win11WindowStyle}">
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Win11Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid Background="{StaticResource Win11BackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- 顶部导航栏 -->
+        <Border Grid.Row="0" Background="{StaticResource Win11SurfaceBrush}" BorderBrush="{StaticResource Win11BorderBrush}" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- 应用标题 -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="16,12">
+                    <TextBlock Text="班级屏幕锁管理系统" Style="{StaticResource Win11TitleStyle}" VerticalAlignment="Center"/>
+                </StackPanel>
+                
+                <!-- 主菜单 -->
+                <Menu Grid.Column="1" Style="{StaticResource Win11MenuStyle}" HorizontalAlignment="Center">
+                    <MenuItem Header="文件" Style="{StaticResource Win11MenuItemStyle}">
+                        <MenuItem Header="新建配置" Click="NewConfigMenuItem_Click" Style="{StaticResource Win11MenuItemStyle}"/>
+                        <Separator Style="{StaticResource Win11SeparatorStyle}"/>
+                        <MenuItem Header="导入配置" Click="ImportConfigMenuItem_Click" Style="{StaticResource Win11MenuItemStyle}"/>
+                        <MenuItem Header="导出配置" Click="ExportConfigMenuItem_Click" Style="{StaticResource Win11MenuItemStyle}"/>
+                        <Separator Style="{StaticResource Win11SeparatorStyle}"/>
+                        <MenuItem Header="退出" Click="ExitMenuItem_Click" Style="{StaticResource Win11MenuItemStyle}"/>
+                    </MenuItem>
+                    <MenuItem Header="工具" Style="{StaticResource Win11MenuItemStyle}">
+                        <MenuItem Header="生成密码" Click="GeneratePasswordMenuItem_Click" Style="{StaticResource Win11MenuItemStyle}"/>
+                        <MenuItem Header="验证密码" Click="VerifyPasswordMenuItem_Click" Style="{StaticResource Win11MenuItemStyle}"/>
+                        <Separator Style="{StaticResource Win11SeparatorStyle}"/>
+                        <MenuItem Header="编辑课表" Click="EditScheduleMenuItem_Click" Style="{StaticResource Win11MenuItemStyle}"/>
+                        <MenuItem Header="系统设置" Click="SystemSettingsMenuItem_Click" Style="{StaticResource Win11MenuItemStyle}"/>
+                    </MenuItem>
+                    <MenuItem Header="日志" Style="{StaticResource Win11MenuItemStyle}">
+                        <MenuItem Header="日志查询" Click="LogViewerMenuItem_Click" Style="{StaticResource Win11MenuItemStyle}"/>
+                        <Separator Style="{StaticResource Win11SeparatorStyle}"/>
+                        <MenuItem Header="清空日志" Click="ClearLogsMenuItem_Click" Style="{StaticResource Win11MenuItemStyle}"/>
+                    </MenuItem>
+                    <MenuItem Header="帮助" Style="{StaticResource Win11MenuItemStyle}">
+                        <MenuItem Header="关于" Click="AboutMenuItem_Click" Style="{StaticResource Win11MenuItemStyle}"/>
+                    </MenuItem>
+                </Menu>
+                
+                <!-- 当前时间显示 -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="16,12">
+                    <TextBlock x:Name="CurrentDateText" Text="2024年1月1日 星期一" Style="{StaticResource Win11BodyStyle}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <TextBlock x:Name="CurrentTimeText" Text="00:00:00" Style="{StaticResource Win11BodyStyle}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        <!-- 主内容区域 -->
+        <Grid Grid.Row="1" Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- 快速操作区域 -->
+            <Border Grid.Row="0" Style="{StaticResource Win11CardStyle}" Margin="0,0,0,24">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- 状态卡片 -->
+                    <Border Grid.Column="0" Style="{StaticResource Win11CardStyle}" Margin="0,0,12,0" Background="{StaticResource Win11SurfaceBrush}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Text="系统状态" Style="{StaticResource Win11SubtitleStyle}" Margin="0,0,0,16"/>
+                            
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="当前状态:" Style="{StaticResource Win11CaptionStyle}" Margin="0,0,0,4"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" x:Name="StatusText" Text="空闲" Style="{StaticResource Win11BodyStyle}" Margin="0,0,0,12"/>
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="当前时段:" Style="{StaticResource Win11CaptionStyle}" Margin="0,0,0,4"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" x:Name="TimeSlotText" Text="未知" Style="{StaticResource Win11BodyStyle}" Margin="0,0,0,12"/>
+                                
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="下一节课:" Style="{StaticResource Win11CaptionStyle}" Margin="0,0,0,4"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" x:Name="NextClassText" Text="无" Style="{StaticResource Win11BodyStyle}" Margin="0,0,0,12"/>
+                                
+                                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="系统设置:" Style="{StaticResource Win11CaptionStyle}" Margin="0,0,0,8"/>
+                                
+                                <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
+                                    <CheckBox x:Name="AutoLockCheckBox" Content="自动锁定" IsEnabled="True" Style="{StaticResource Win11CheckBoxStyle}" Margin="0,0,0,8"/>
+                                    <CheckBox x:Name="ProcessProtectionCheckBox" Content="进程保护" IsEnabled="True" Style="{StaticResource Win11CheckBoxStyle}" Margin="0,0,0,8"/>
+                                    <CheckBox x:Name="TaskManagerBlockCheckBox" Content="禁用任务管理器" IsEnabled="True" Style="{StaticResource Win11CheckBoxStyle}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- 快速操作卡片 -->
+                    <Border Grid.Column="1" Style="{StaticResource Win11CardStyle}" Margin="12,0,0,0" Background="{StaticResource Win11SurfaceBrush}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Text="快速操作" Style="{StaticResource Win11SubtitleStyle}" Margin="0,0,0,16"/>
+                            
+                            <Grid Grid.Row="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                
+                                <!-- 锁定控制按钮 -->
+                                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,16">
+                                    <Button x:Name="ShowLockButtonBtn" Content="显示锁定按钮" Style="{StaticResource Win11SecondaryButtonStyle}" Click="ShowLockButtonBtn_Click"/>
+                                    <Button x:Name="HideLockButtonBtn" Content="隐藏锁定按钮" Style="{StaticResource Win11SecondaryButtonStyle}" Click="HideLockButtonBtn_Click"/>
+                                    <Button x:Name="LockScreenBtn" Content="锁定屏幕" Style="{StaticResource Win11DangerButtonStyle}" Click="LockScreenBtn_Click"/>
+                                </StackPanel>
+                                
+                                <!-- 管理按钮 -->
+                                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,16">
+                                    <Button x:Name="PasswordManagerBtn" Content="密码管理" Style="{StaticResource Win11SecondaryButtonStyle}" Click="PasswordManagerBtn_Click"/>
+                                    <Button x:Name="EditScheduleBtn" Content="编辑课表" Style="{StaticResource Win11SecondaryButtonStyle}" Click="EditScheduleBtn_Click"/>
+                                    <Button x:Name="SystemSettingsBtn" Content="系统设置" Style="{StaticResource Win11SecondaryButtonStyle}" Click="SystemSettingsBtn_Click"/>
+                                </StackPanel>
+                                
+                                <!-- 状态指示器 -->
+                                <Border Grid.Row="2" Background="{StaticResource Win11CardBrush}" CornerRadius="{StaticResource Win11CornerRadius}" Padding="16">
+                                    <StackPanel>
+                                        <TextBlock Text="系统运行状态" Style="{StaticResource Win11BodyStyle}" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Ellipse Grid.Column="0" Width="12" Height="12" Fill="{StaticResource Win11SuccessBrush}" Margin="0,0,8,0"/>
+                                            <TextBlock Grid.Column="1" x:Name="SystemStatusText" Text="系统正常运行" Style="{StaticResource Win11BodyStyle}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+            
+            <!-- 日志区域 -->
+            <Border Grid.Row="1" Style="{StaticResource Win11CardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock Grid.Column="0" Text="系统日志" Style="{StaticResource Win11SubtitleStyle}" Margin="0,0,0,16"/>
+                        <Button Grid.Column="1" Content="清空日志" Style="{StaticResource Win11SecondaryButtonStyle}" Click="ClearLogsMenuItem_Click" Padding="12,6"/>
+                    </Grid>
+                    
+                    <Border Grid.Row="1" Background="{StaticResource Win11SurfaceBrush}" CornerRadius="{StaticResource Win11CornerRadius}" Padding="16">
+                        <ScrollViewer x:Name="LogScrollViewer" Style="{StaticResource Win11ScrollViewerStyle}" VerticalScrollBarVisibility="Auto" Height="200">
+                            <TextBlock x:Name="LogText" Text="系统已启动..." Style="{StaticResource Win11BodyStyle}" FontFamily="Consolas" />
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+        
+        <!-- 底部状态栏 -->
+        <StatusBar Grid.Row="2" Style="{StaticResource Win11StatusBarStyle}">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusBarText" Text="就绪" Style="{StaticResource Win11BodyStyle}"/>
+            </StatusBarItem>
+            <Separator Style="{StaticResource Win11SeparatorStyle}"/>
+            <StatusBarItem>
+                <TextBlock x:Name="TimeStatusBarText" Text="00:00:00" Style="{StaticResource Win11BodyStyle}"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

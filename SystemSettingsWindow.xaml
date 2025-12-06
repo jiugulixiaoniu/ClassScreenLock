@@ -1,0 +1,168 @@
+﻿<Window x:Class="CCLS.SystemSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="系统设置"
+        Height="600"
+        Width="800"
+        WindowStartupLocation="CenterScreen"
+        Style="{DynamicResource MetroWindowStyle}">
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/MetroStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- 标题栏 -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Background="#FF333333" Margin="0,0,0,10">
+            <TextBlock Text="系统设置" FontSize="16" FontWeight="Bold" Foreground="White" Padding="10"/>
+        </StackPanel>
+        
+        <!-- 主内容区域 -->
+        <ScrollViewer Grid.Row="1" Margin="10">
+            <TabControl Background="{StaticResource MetroSurfaceBrush}" BorderBrush="{StaticResource MetroBorderBrush}">
+                <!-- 基本设置标签页 -->
+                <TabItem Header="基本设置" Background="{StaticResource MetroPrimaryBrush}" Foreground="White">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="启用自动锁定: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" x:Name="EnableAutoLockCheckBox" Style="{StaticResource MetroCheckBoxStyle}" Margin="0,10,0,0"/>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="锁定窗口透明度: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="0,10,0,0">
+                            <Slider x:Name="LockWindowOpacitySlider" Minimum="0.5" Maximum="1.0" TickFrequency="0.05" IsSnapToTickEnabled="True" Width="200"/>
+                            <TextBlock x:Name="LockWindowOpacityText" Text="0.95" Margin="10,0,0,0" Style="{StaticResource MetroTextBlockStyle}" Width="50" TextAlignment="Center"/>
+                        </StackPanel>
+                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="锁定按钮X坐标: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="2" Grid.Column="1" x:Name="LockButtonXTextBox" Style="{StaticResource MetroTextBoxStyle}" Margin="0,10,0,0" Width="100"/>
+                        
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="锁定按钮Y坐标: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="3" Grid.Column="1" x:Name="LockButtonYTextBox" Style="{StaticResource MetroTextBoxStyle}" Margin="0,10,0,0" Width="100"/>
+                        
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="开机自启: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="4" Grid.Column="1" x:Name="RunAtStartupCheckBox" Style="{StaticResource MetroCheckBoxStyle}" Margin="0,10,0,0"/>
+                        
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="启用进程保护: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="5" Grid.Column="1" x:Name="EnableProcessProtectionCheckBox" Style="{StaticResource MetroCheckBoxStyle}" Margin="0,10,0,0"/>
+                        
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="启用日志记录: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="6" Grid.Column="1" x:Name="EnableLoggingCheckBox" Style="{StaticResource MetroCheckBoxStyle}" Margin="0,10,0,0"/>
+                        
+                        <TextBlock Grid.Row="7" Grid.Column="0" Text="应用程序字体: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <ComboBox Grid.Row="7" Grid.Column="1" x:Name="FontFamilyComboBox" Style="{StaticResource MetroComboBoxStyle}" Margin="0,10,0,0" Width="200">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontFamily="{Binding}" FontSize="14"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        
+                        <TextBlock Grid.Row="8" Grid.Column="0" Text="字体大小: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="8" Grid.Column="1" x:Name="FontSizeTextBox" Style="{StaticResource MetroTextBoxStyle}" Margin="0,10,0,0" Width="100"/>
+                    </Grid>
+                </TabItem>
+                <!-- 锁定窗口设置标签页 -->
+                <TabItem Header="锁定窗口设置" Background="{StaticResource MetroPrimaryBrush}" Foreground="White">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="窗口标题: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="LockWindowTitleTextBox" Style="{StaticResource MetroTextBoxStyle}" Margin="0,10,0,0" Width="300"/>
+                        
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="显示消息: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Top"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" x:Name="LockWindowMessageTextBox" Style="{StaticResource MetroTextBoxStyle}" Margin="0,10,0,0" Width="300" Height="100" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+                        
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="显示倒计时: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="2" Grid.Column="1" x:Name="ShowCountdownCheckBox" Style="{StaticResource MetroCheckBoxStyle}" Margin="0,10,0,0"/>
+                        
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="背景颜色: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="0,10,0,0" VerticalAlignment="Center">
+                            <TextBox x:Name="BackgroundColorTextBox" Style="{StaticResource MetroTextBoxStyle}" Width="100"/>
+                            <Border Width="30" Height="30" Margin="10,0,0,0" BorderBrush="Gray" BorderThickness="1" Background="{Binding Text, ElementName=BackgroundColorTextBox}"/>
+                        </StackPanel>
+                        
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="文字颜色: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Margin="0,10,0,0" VerticalAlignment="Center">
+                            <TextBox x:Name="TextColorTextBox" Style="{StaticResource MetroTextBoxStyle}" Width="100"/>
+                            <Border Width="30" Height="30" Margin="10,0,0,0" BorderBrush="Gray" BorderThickness="1" Background="{Binding Text, ElementName=TextColorTextBox}"/>
+                        </StackPanel>
+                        
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="倒计时颜色: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" Margin="0,10,0,0" VerticalAlignment="Center">
+                            <TextBox x:Name="CountdownColorTextBox" Style="{StaticResource MetroTextBoxStyle}" Width="100"/>
+                            <Border Width="30" Height="30" Margin="10,0,0,0" BorderBrush="Gray" BorderThickness="1" Background="{Binding Text, ElementName=CountdownColorTextBox}"/>
+                        </StackPanel>
+                        
+                        <TextBlock Grid.Row="6" Grid.Column="0" Text="课间提示时长(秒): " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" Margin="0,10,0,0">
+                            <Slider x:Name="BreakTimeNotificationDurationSlider" Minimum="1" Maximum="30" TickFrequency="1" IsSnapToTickEnabled="True" Width="200"/>
+                            <TextBlock x:Name="BreakTimeNotificationDurationText" Text="5" Margin="10,0,0,0" Style="{StaticResource MetroTextBlockStyle}" Width="50" TextAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <!-- 通知设置标签页 -->
+                <TabItem Header="通知设置" Background="{StaticResource MetroPrimaryBrush}" Foreground="White">
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="显示操作提示: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="0" Grid.Column="1" x:Name="ShowNotificationsCheckBox" Style="{StaticResource MetroCheckBoxStyle}" Margin="0,10,0,0"/>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </ScrollViewer>
+        
+        <!-- 底部按钮栏 -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="10">
+            <Button x:Name="SaveBtn" Content="保存" Style="{StaticResource MetroButtonStyle}" Click="SaveBtn_Click" Margin="5"/>
+            <Button x:Name="CancelBtn" Content="取消" Style="{StaticResource MetroButtonStyle}" Click="CancelBtn_Click" Margin="5"/>
+            <Button x:Name="ResetBtn" Content="重置" Style="{StaticResource MetroButtonStyle}" Click="ResetBtn_Click" Margin="5"/>
+        </StackPanel>
+    </Grid>
+</Window>
