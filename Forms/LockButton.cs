@@ -48,7 +48,7 @@ public class LockButton : Window
         // 创建按钮内容
         var buttonContent = new System.Windows.Controls.Button
         {
-            Content = "锁定屏幕",
+            Content = "双击锁定",
             Width = 110,
             Height = 50,
             Background = Brushes.Transparent,
@@ -57,7 +57,8 @@ public class LockButton : Window
             FontSize = 14,
             FontWeight = FontWeights.Bold
         };
-        buttonContent.Click += OnButtonClick;
+        // 使用双击事件代替单击事件，防止误触
+        buttonContent.MouseDoubleClick += OnButtonDoubleClick;
         
         // 设置窗口内容
         Content = buttonContent;
@@ -89,11 +90,11 @@ public class LockButton : Window
     }
     
     /// <summary>
-    /// 按钮点击事件
+    /// 按钮双击事件（防止误触）
     /// </summary>
     /// <param name="sender">发送者</param>
     /// <param name="e">事件参数</param>
-    private void OnButtonClick(object sender, RoutedEventArgs e)
+    private void OnButtonDoubleClick(object sender, MouseButtonEventArgs e)
     {
         LockClicked?.Invoke(this, EventArgs.Empty);
     }

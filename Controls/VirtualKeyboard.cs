@@ -220,7 +220,7 @@ public class VirtualKeyboard : UserControl
     /// <returns>按钮控件</returns>
     private Button CreateKeyButton(string content)
     {
-        return new Button
+        var button = new Button
         {
             Content = content,
             Width = 50,
@@ -232,6 +232,11 @@ public class VirtualKeyboard : UserControl
             BorderBrush = new SolidColorBrush(Color.FromRgb(200, 200, 200)),
             BorderThickness = new Thickness(1)
         };
+        
+        // 禁用按钮音效
+        button.ClickMode = ClickMode.Press;
+        
+        return button;
     }
     
     /// <summary>
@@ -241,7 +246,7 @@ public class VirtualKeyboard : UserControl
     /// <returns>按钮控件</returns>
     private Button CreateFunctionButton(string content)
     {
-        return new Button
+        var button = new Button
         {
             Content = content,
             Width = 100,
@@ -252,6 +257,11 @@ public class VirtualKeyboard : UserControl
             Foreground = Brushes.White,
             BorderThickness = new Thickness(1)
         };
+        
+        // 禁用按钮音效
+        button.ClickMode = ClickMode.Press;
+        
+        return button;
     }
     
     /// <summary>
@@ -312,7 +322,9 @@ public class VirtualKeyboard : UserControl
                 var unlockButton = FindChild<Button>(parentWindow, "unlockButton");
                 if (unlockButton != null)
                 {
+                    // 触发解锁按钮点击事件
                     unlockButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                    
                     // 确认后清空密码
                     ClearPassword();
                 }

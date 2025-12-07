@@ -232,8 +232,8 @@
         <Setter Property="BorderBrush" Value="{StaticResource MetroBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="6"/>
-        <Setter Property="FontSize" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontSize}"/>
-        <Setter Property="FontFamily" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource CurrentConfigFontSize}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
@@ -271,8 +271,8 @@
         <Setter Property="Foreground" Value="{StaticResource MetroTextPrimaryBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource MetroBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="FontSize" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontSize}"/>
-        <Setter Property="FontFamily" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource CurrentConfigFontSize}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}"/>
         <Setter Property="Margin" Value="5"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
@@ -284,8 +284,8 @@
         <Setter Property="Foreground" Value="{StaticResource MetroTextPrimaryBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource MetroBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="FontSize" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontSize}"/>
-        <Setter Property="FontFamily" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource CurrentConfigFontSize}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}"/>
         <Setter Property="AlternatingRowBackground" Value="#FFF0F0F0"/>
         <Setter Property="RowBackground" Value="White"/>
         <Setter Property="HeadersVisibility" Value="Column"/>
@@ -309,8 +309,8 @@
         <Setter Property="BorderBrush" Value="{StaticResource MetroBorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Padding" Value="6"/>
-        <Setter Property="FontSize" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontSize}"/>
-        <Setter Property="FontFamily" Value="{Binding Source={x:Static local:App.CurrentConfig}, Path=FontFamily}"/>
+        <Setter Property="FontSize" Value="{DynamicResource CurrentConfigFontSize}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBox}">

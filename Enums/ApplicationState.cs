@@ -23,7 +23,12 @@ public enum ApplicationState
     /// <summary>
     /// 配置状态
     /// </summary>
-    Configuring
+    Configuring,
+    
+    /// <summary>
+    /// 上课时间状态
+    /// </summary>
+    ClassTime
 }
 
 /// <summary>

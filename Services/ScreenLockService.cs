@@ -35,6 +35,9 @@ public class ScreenLockService : IDisposable
     // 存储的密码列表
     private List<PasswordInfo> _passwords = new List<PasswordInfo>();
     
+    // 标志位：是否已经在当前课间休息时间锁定过屏幕
+    private bool _hasLockedThisBreakTime = false;
+    
     /// <summary>
     /// 应用程序状态变化事件
     /// </summary>
@@ -150,12 +153,20 @@ public class ScreenLockService : IDisposable
     /// </summary>
     public void ShowLockButton()
     {
+        Console.WriteLine("[ScreenLockService] ShowLockButton 方法调用");
+        
         if (_lockButton == null)
         {
+            Console.WriteLine("[ScreenLockService] 创建新的锁定按钮");
             _lockButton = new LockButton(_config);
             _lockButton.LockClicked += OnLockButtonClicked;
         }
+        else
+        {
+            Console.WriteLine("[ScreenLockService] 使用现有锁定按钮");
+        }
         
+        Console.WriteLine($"[ScreenLockService] 显示锁定按钮，位置: ({_config.LockButtonX}, {_config.LockButtonY})");
         _lockButton.Show();
         _lockButton.Activate();
         
@@ -180,6 +191,9 @@ public class ScreenLockService : IDisposable
     {
         // 隐藏锁定按钮
         HideLockButton();
+        
+        // 设置标志位，当前课间休息时间不再显示锁定按钮
+        _hasLockedThisBreakTime = true;
         
         // 显示锁定窗口
         if (_lockWindow == null)
@@ -239,9 +253,24 @@ public class ScreenLockService : IDisposable
     /// <param name="e">事件参数</param>
     private void OnBreakTimeStarted(object? sender, EventArgs e)
     {
-        if (_config.EnableAutoLock)
+        Console.WriteLine($"[ScreenLockService] 课间时间开始事件触发，自动锁定启用: {_config.EnableAutoLock}");
+        
+        // 始终设置状态为课间休息
+        CurrentState = ApplicationState.BreakTime;
+        
+        // 每次课间休息开始时，重置锁定标志位
+        // 这样每次课间休息都会显示锁定按钮（如果启用了自动锁定）
+        _hasLockedThisBreakTime = false;
+        
+        // 如果启用自动锁定，则显示锁定按钮
+        if (_config.EnableAutoLock && !_hasLockedThisBreakTime)
         {
+            Console.WriteLine("[ScreenLockService] 条件满足，显示锁定按钮");
             ShowLockButton();
+        }
+        else
+        {
+            Console.WriteLine($"[ScreenLockService] 不显示锁定按钮，原因: 自动锁定={_config.EnableAutoLock}, 已锁定={_hasLockedThisBreakTime}");
         }
     }
     
@@ -254,11 +283,17 @@ public class ScreenLockService : IDisposable
     {
         HideLockButton();
         
+        // 重置标志位，下一次课间休息可以再次显示锁定按钮
+        _hasLockedThisBreakTime = false;
+        
         // 如果当前处于锁定状态，自动解锁
         if (CurrentState == ApplicationState.Locked)
         {
             UnlockScreen(UnlockMethod.Auto);
         }
+        
+        // 始终设置状态为上课时间
+        CurrentState = ApplicationState.ClassTime;
     }
     
     /// <summary>

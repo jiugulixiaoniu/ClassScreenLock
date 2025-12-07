@@ -25,154 +25,97 @@
         
         <!-- 顶部工具栏 -->
         <ToolBar Grid.Row="0" Background="{StaticResource MetroPrimaryBrush}" Foreground="{StaticResource MetroTextLightBrush}">
-            <Button x:Name="SaveButton" Content="保存课表" Style="{StaticResource MetroButtonStyle}" Click="SaveButton_Click"/>
+            <Button x:Name="SaveButton" Content="保存时间表" Style="{StaticResource MetroButtonStyle}" Click="SaveButton_Click"/>
             <Separator Style="{StaticResource MetroSeparatorStyle}"/>
-            <Button x:Name="ImportButton" Content="从JSON导入" Style="{StaticResource MetroButtonStyle}" Click="ImportButton_Click"/>
             <Button x:Name="ExportButton" Content="导出为JSON" Style="{StaticResource MetroButtonStyle}" Click="ExportButton_Click"/>
         </ToolBar>
         
         <!-- 主内容区域 -->
-        <TabControl Grid.Row="1" Margin="5" Background="{StaticResource MetroSurfaceBrush}" BorderBrush="{StaticResource MetroBorderBrush}">
-            <!-- 周一课表 -->
-            <TabItem Header="周一" Background="{StaticResource MetroPrimaryBrush}" Foreground="White">
-                <Grid Style="{StaticResource MetroGridStyle}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Button Grid.Row="0" x:Name="AddMondayClassButton" Content="添加课程" Style="{StaticResource MetroButtonStyle}" Click="AddMondayClassButton_Click" Margin="5" Width="100" HorizontalAlignment="Left"/>
-                    <DataGrid Grid.Row="1" x:Name="MondayDataGrid" ItemsSource="{Binding MondayClasses}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="5" Background="{StaticResource MetroSurfaceBrush}" BorderBrush="{StaticResource MetroBorderBrush}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="课程名称" Binding="{Binding Name}" Width="*"/>
-                            <DataGridTextColumn Header="开始时间" Binding="{Binding StartTime}" Width="100"/>
-                            <DataGridTextColumn Header="结束时间" Binding="{Binding EndTime}" Width="100"/>
-                            <DataGridTextColumn Header="教室" Binding="{Binding Classroom}" Width="100"/>
-                            <DataGridTextColumn Header="教师" Binding="{Binding Teacher}" Width="100"/>
-                            <DataGridTemplateColumn Header="操作" Width="80">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Content="删除" Tag="{Binding}" Click="DeleteClassButton_Click" Style="{StaticResource MetroButtonStyle}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
-            
-            <!-- 周二课表 -->
-            <TabItem Header="周二" Background="{StaticResource MetroPrimaryBrush}" Foreground="White">
-                <Grid Style="{StaticResource MetroGridStyle}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Button Grid.Row="0" x:Name="AddTuesdayClassButton" Content="添加课程" Style="{StaticResource MetroButtonStyle}" Click="AddTuesdayClassButton_Click" Margin="5" Width="100" HorizontalAlignment="Left"/>
-                    <DataGrid Grid.Row="1" x:Name="TuesdayDataGrid" ItemsSource="{Binding TuesdayClasses}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="5" Background="{StaticResource MetroSurfaceBrush}" BorderBrush="{StaticResource MetroBorderBrush}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="课程名称" Binding="{Binding Name}" Width="*"/>
-                            <DataGridTextColumn Header="开始时间" Binding="{Binding StartTime}" Width="100"/>
-                            <DataGridTextColumn Header="结束时间" Binding="{Binding EndTime}" Width="100"/>
-                            <DataGridTextColumn Header="教室" Binding="{Binding Classroom}" Width="100"/>
-                            <DataGridTextColumn Header="教师" Binding="{Binding Teacher}" Width="100"/>
-                            <DataGridTemplateColumn Header="操作" Width="80">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Content="删除" Tag="{Binding}" Click="DeleteClassButton_Click" Style="{StaticResource MetroButtonStyle}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
-            
-            <!-- 周三课表 -->
-            <TabItem Header="周三" Background="{StaticResource MetroPrimaryBrush}" Foreground="White">
-                <Grid Style="{StaticResource MetroGridStyle}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Button Grid.Row="0" x:Name="AddWednesdayClassButton" Content="添加课程" Style="{StaticResource MetroButtonStyle}" Click="AddWednesdayClassButton_Click" Margin="5" Width="100" HorizontalAlignment="Left"/>
-                    <DataGrid Grid.Row="1" x:Name="WednesdayDataGrid" ItemsSource="{Binding WednesdayClasses}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="5" Background="{StaticResource MetroSurfaceBrush}" BorderBrush="{StaticResource MetroBorderBrush}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="课程名称" Binding="{Binding Name}" Width="*"/>
-                            <DataGridTextColumn Header="开始时间" Binding="{Binding StartTime}" Width="100"/>
-                            <DataGridTextColumn Header="结束时间" Binding="{Binding EndTime}" Width="100"/>
-                            <DataGridTextColumn Header="教室" Binding="{Binding Classroom}" Width="100"/>
-                            <DataGridTextColumn Header="教师" Binding="{Binding Teacher}" Width="100"/>
-                            <DataGridTemplateColumn Header="操作" Width="80">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Content="删除" Tag="{Binding}" Click="DeleteClassButton_Click" Style="{StaticResource MetroButtonStyle}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
-            
-            <!-- 周四课表 -->
-            <TabItem Header="周四" Background="{StaticResource MetroPrimaryBrush}" Foreground="White">
-                <Grid Style="{StaticResource MetroGridStyle}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Button Grid.Row="0" x:Name="AddThursdayClassButton" Content="添加课程" Style="{StaticResource MetroButtonStyle}" Click="AddThursdayClassButton_Click" Margin="5" Width="100" HorizontalAlignment="Left"/>
-                    <DataGrid Grid.Row="1" x:Name="ThursdayDataGrid" ItemsSource="{Binding ThursdayClasses}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="5" Background="{StaticResource MetroSurfaceBrush}" BorderBrush="{StaticResource MetroBorderBrush}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="课程名称" Binding="{Binding Name}" Width="*"/>
-                            <DataGridTextColumn Header="开始时间" Binding="{Binding StartTime}" Width="100"/>
-                            <DataGridTextColumn Header="结束时间" Binding="{Binding EndTime}" Width="100"/>
-                            <DataGridTextColumn Header="教室" Binding="{Binding Classroom}" Width="100"/>
-                            <DataGridTextColumn Header="教师" Binding="{Binding Teacher}" Width="100"/>
-                            <DataGridTemplateColumn Header="操作" Width="80">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Content="删除" Tag="{Binding}" Click="DeleteClassButton_Click" Style="{StaticResource MetroButtonStyle}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
-            
-            <!-- 周五课表 -->
-            <TabItem Header="周五" Background="{StaticResource MetroPrimaryBrush}" Foreground="White">
-                <Grid Style="{StaticResource MetroGridStyle}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Button Grid.Row="0" x:Name="AddFridayClassButton" Content="添加课程" Style="{StaticResource MetroButtonStyle}" Click="AddFridayClassButton_Click" Margin="5" Width="100" HorizontalAlignment="Left"/>
-                    <DataGrid Grid.Row="1" x:Name="FridayDataGrid" ItemsSource="{Binding FridayClasses}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="5" Background="{StaticResource MetroSurfaceBrush}" BorderBrush="{StaticResource MetroBorderBrush}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="课程名称" Binding="{Binding Name}" Width="*"/>
-                            <DataGridTextColumn Header="开始时间" Binding="{Binding StartTime}" Width="100"/>
-                            <DataGridTextColumn Header="结束时间" Binding="{Binding EndTime}" Width="100"/>
-                            <DataGridTextColumn Header="教室" Binding="{Binding Classroom}" Width="100"/>
-                            <DataGridTextColumn Header="教师" Binding="{Binding Teacher}" Width="100"/>
-                            <DataGridTemplateColumn Header="操作" Width="80">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Content="删除" Tag="{Binding}" Click="DeleteClassButton_Click" Style="{StaticResource MetroButtonStyle}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
-        </TabControl>
+        <Border Grid.Row="1" Margin="5" Background="{StaticResource MetroSurfaceBrush}" BorderBrush="{StaticResource MetroBorderBrush}" BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <!-- 说明文字 -->
+                <TextBlock Grid.Row="0" Text="课表设置 - 设置上课时间、教室和教师信息" Margin="5" FontWeight="Bold" FontSize="14"/>
+                
+                <!-- 时间设置区域 -->
+                <GroupBox Grid.Row="1" Header="时间设置" Margin="5" Padding="5">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- 默认时间设置 -->
+                        <Grid Grid.Row="0" Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Grid.Column="0" Text="第一节开始:" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox Grid.Column="1" x:Name="DefaultStartTimeTextBox" Width="60" Margin="5" Text="07:00"/>
+                            
+                            <TextBlock Grid.Column="2" Text="课程时长(分钟):" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox Grid.Column="3" x:Name="ClassDurationTextBox" Width="60" Margin="5" Text="45"/>
+                            
+                            <TextBlock Grid.Column="4" Text="课间休息时长(分钟):" VerticalAlignment="Center" Margin="5"/>
+                            <TextBox Grid.Column="5" x:Name="BreakDurationTextBox" Width="60" Margin="5" Text="10"/>
+                            
+                            <Button Grid.Column="6" x:Name="SaveDefaultTimesButton" Content="保存默认设置" Margin="5" Click="SaveDefaultTimesButton_Click" Style="{StaticResource MetroButtonStyle}"/>
+                            <Button Grid.Column="7" x:Name="LoadDefaultTimesButton" Content="加载默认设置" Margin="5" Click="LoadDefaultTimesButton_Click" Style="{StaticResource MetroButtonStyle}"/>
+                        </Grid>
+                        
+                        <!-- 快速添加按钮 -->
+                        <Grid Grid.Row="1" Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <Button Grid.Column="0" x:Name="AddClassButton" Content="添加上课时间段" Margin="5" Click="AddClassButton_Click" Style="{StaticResource MetroButtonStyle}"/>
+                            <Button Grid.Column="1" x:Name="AddBreakButton" Content="添加课间休息" Margin="5" Click="AddBreakButton_Click" Style="{StaticResource MetroButtonStyle}"/>
+                            <TextBlock Grid.Column="2" Text="提示：先设置默认时间，然后点击按钮添加时间段" VerticalAlignment="Center" Margin="5" Foreground="Gray"/>
+                        </Grid>
+                    </Grid>
+                </GroupBox>
+                
+                <!-- 课程列表 -->
+                <DataGrid Grid.Row="2" x:Name="AllClassesDataGrid" ItemsSource="{Binding AllClasses}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="5" Background="{StaticResource MetroSurfaceBrush}" BorderBrush="{StaticResource MetroBorderBrush}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="时间段命名" Binding="{Binding ClassName}" Width="100"/>
+                        <DataGridTextColumn Header="开始时间" Binding="{Binding StartTime, StringFormat='hh\\:mm\\:ss'}" Width="200"/>
+                        <DataGridTextColumn Header="结束时间" Binding="{Binding EndTime, StringFormat='hh\\:mm\\:ss'}" Width="200"/>
+                        <DataGridTextColumn Header="教师" Binding="{Binding Teacher}" Width="100"/>
+                        <DataGridCheckBoxColumn Header="是否为课间休息" Binding="{Binding IsBreakTime}" Width="100"/>
+                        <DataGridTemplateColumn Header="操作" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="删除" Tag="{Binding}" Click="DeleteTimeSlotButton_Click" Style="{StaticResource MetroButtonStyle}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
         
         <!-- 底部状态栏 -->
         <StatusBar Grid.Row="2" Style="{StaticResource MetroStatusBarStyle}">
             <StatusBarItem>
-                <TextBlock Text="提示：直接在表格中编辑课程信息，点击保存按钮保存更改" Style="{StaticResource MetroTextBlockStyle}"/>
+                <TextBlock x:Name="StatusText" Text="就绪"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>

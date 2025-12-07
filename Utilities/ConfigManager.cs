@@ -14,7 +14,7 @@ public static class ConfigManager
     private static readonly string _configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
     
     // 课表文件路径
-    private static readonly string _scheduleFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "schedule.json");
+    private static readonly string _scheduleFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "lessontime", "schedule.json");
     
     // 密码文件路径
     private static readonly string _passwordFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "passwords.json");
@@ -102,12 +102,41 @@ public static class ConfigManager
     {
         try
         {
+            // 确保lessontime文件夹存在
+            var lessontimeDir = Path.GetDirectoryName(_scheduleFilePath);
+            if (!string.IsNullOrEmpty(lessontimeDir) && !Directory.Exists(lessontimeDir))
+            {
+                Directory.CreateDirectory(lessontimeDir);
+            }
+            
+            // 序列化前检查数据
+            if (schedule == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] SaveSchedule: 课表对象为null");
+                return false;
+            }
+            
+            if (schedule.Classes == null)
+            {
+                Console.WriteLine($"[{DateTime.Now}] SaveSchedule: 课程列表为null");
+                return false;
+            }
+            
+            Console.WriteLine($"[{DateTime.Now}] SaveSchedule: 开始保存课表，包含 {schedule.Classes.Count} 门课程");
+            
             var json = JsonSerializer.Serialize(schedule, _jsonOptions);
+            Console.WriteLine($"[{DateTime.Now}] SaveSchedule: JSON序列化成功，长度 {json.Length} 字符");
+            
             File.WriteAllText(_scheduleFilePath, json);
+            Console.WriteLine($"[{DateTime.Now}] SaveSchedule: 文件保存成功到 {_scheduleFilePath}");
+            
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            Console.WriteLine($"[{DateTime.Now}] SaveSchedule: 保存失败 - {ex.Message}");
+            Console.WriteLine($"[{DateTime.Now}] SaveSchedule: 异常类型 - {ex.GetType().Name}");
+            Console.WriteLine($"[{DateTime.Now}] SaveSchedule: 堆栈跟踪 - {ex.StackTrace}");
             return false;
         }
     }

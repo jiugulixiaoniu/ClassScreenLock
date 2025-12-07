@@ -50,6 +50,8 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="启用自动锁定: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
@@ -87,6 +89,12 @@
                         
                         <TextBlock Grid.Row="8" Grid.Column="0" Text="字体大小: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
                         <TextBox Grid.Row="8" Grid.Column="1" x:Name="FontSizeTextBox" Style="{StaticResource MetroTextBoxStyle}" Margin="0,10,0,0" Width="100"/>
+                        
+                        <TextBlock Grid.Row="9" Grid.Column="0" Text="点击关闭按钮最小化到托盘: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="9" Grid.Column="1" x:Name="MinimizeToTrayOnCloseCheckBox" Style="{StaticResource MetroCheckBoxStyle}" Margin="0,10,0,0"/>
+                        
+                        <TextBlock Grid.Row="10" Grid.Column="0" Text="启动时直接最小化到托盘: " Style="{StaticResource MetroTextBlockStyle}" Margin="0,10,10,0" VerticalAlignment="Center"/>
+                        <CheckBox Grid.Row="10" Grid.Column="1" x:Name="MinimizeToTrayOnStartupCheckBox" Style="{StaticResource MetroCheckBoxStyle}" Margin="0,10,0,0"/>
                     </Grid>
                 </TabItem>
                 <!-- 锁定窗口设置标签页 -->

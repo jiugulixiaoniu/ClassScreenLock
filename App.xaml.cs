@@ -11,15 +11,17 @@ using CCLS.Models;
 using CCLS.Services;
 using CCLS.Utilities;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace CCLS;
 
 /// <summary>
 /// App.xaml 的交互逻辑
 /// </summary>
-public partial class App : Application, INotifyPropertyChanged
+public partial class App : System.Windows.Application, INotifyPropertyChanged
 {
     private static ApplicationConfig? _currentConfig;
+    private static NotifyIcon? _notifyIcon;
     
     /// <summary>
     /// 当前应用程序配置
@@ -61,15 +63,28 @@ public partial class App : Application, INotifyPropertyChanged
     /// <summary>
     /// 更新动态资源
     /// </summary>
-    private static void UpdateDynamicResources()
+    public static void UpdateDynamicResources()
     {
         if (CurrentConfig == null) return;
         
         var app = Current as App;
         if (app == null) return;
         
+        // 创建字体族，包含主字体和备用中文字体
+        FontFamily fontFamily;
+        try
+        {
+            // 尝试创建包含备用字体的字体族
+            fontFamily = new FontFamily(CurrentConfig.FontFamily + ", Microsoft YaHei UI, SimSun, Arial");
+        }
+        catch
+        {
+            // 如果失败，使用系统默认字体
+            fontFamily = new FontFamily("Microsoft YaHei UI, SimSun, Arial");
+        }
+        
         // 更新字体资源
-        app.Resources["CurrentConfigFontFamily"] = new FontFamily(CurrentConfig.FontFamily);
+        app.Resources["CurrentConfigFontFamily"] = fontFamily;
         app.Resources["CurrentConfigFontSize"] = CurrentConfig.FontSize;
     }
     
@@ -108,13 +123,32 @@ public partial class App : Application, INotifyPropertyChanged
             // 加载配置并设置为当前配置
             CurrentConfig = ConfigManager.LoadConfig();
             
+            // 更新动态资源（包括字体）
+            UpdateDynamicResources();
+            
+            // 初始化系统托盘
+            InitializeNotifyIcon();
+            
             // 启动主窗口
             var mainWindow = new MainWindow();
-            mainWindow.Show();
+            
+            // 根据配置决定是否显示主窗口
+            if (CurrentConfig?.MinimizeToTrayOnStartup == true)
+            {
+                // 如果配置为启动时最小化到托盘，则不显示窗口
+                // 窗口将在MainWindow构造函数中处理最小化和隐藏
+                LogMessage("启动时最小化到托盘模式，不显示主窗口");
+            }
+            else
+            {
+                // 否则正常显示主窗口
+                mainWindow.Show();
+                LogMessage("正常显示主窗口");
+            }
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"应用程序启动失败：{ex.Message}\n\n堆栈跟踪：\n{ex.StackTrace}", "启动错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            System.Windows.MessageBox.Show($"应用程序启动失败：{ex.Message}\n\n堆栈跟踪：\n{ex.StackTrace}", "启动错误", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
     
@@ -143,7 +177,7 @@ public partial class App : Application, INotifyPropertyChanged
             LogException(e.Exception);
             
             // 显示错误消息
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 $"应用程序发生未处理的异常：\n\n{e.Exception.Message}\n\n详细信息已记录到日志文件。",
                 "系统错误",
                 MessageBoxButton.OK,
@@ -177,7 +211,7 @@ public partial class App : Application, INotifyPropertyChanged
                 LogException(exception);
                 
                 // 显示错误消息
-                MessageBox.Show(
+                System.Windows.MessageBox.Show(
                     $"应用程序发生严重错误：\n\n{exception.Message}\n\n详细信息已记录到日志文件。",
                     "严重错误",
                     MessageBoxButton.OK,
@@ -196,7 +230,7 @@ public partial class App : Application, INotifyPropertyChanged
         // 如果是严重异常，终止应用程序
         if (e.IsTerminating)
         {
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 "应用程序即将终止，请重启程序。",
                 "系统终止",
                 MessageBoxButton.OK,
@@ -296,7 +330,7 @@ public partial class App : Application, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 $"创建数据目录失败：{ex.Message}",
                 "初始化错误",
                 MessageBoxButton.OK,
@@ -339,7 +373,7 @@ public partial class App : Application, INotifyPropertyChanged
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 $"创建默认配置失败：{ex.Message}",
                 "初始化错误",
                 MessageBoxButton.OK,
@@ -356,6 +390,14 @@ public partial class App : Application, INotifyPropertyChanged
     {
         try
         {
+            // 清理托盘图标
+            if (_notifyIcon != null)
+            {
+                _notifyIcon.Visible = false;
+                _notifyIcon.Dispose();
+                _notifyIcon = null;
+            }
+            
             // 清理资源
             // 这里可以添加其他清理逻辑
         }
@@ -365,4 +407,118 @@ public partial class App : Application, INotifyPropertyChanged
             LogException(ex);
         }
     }
+    
+    /// <summary>
+    /// 初始化系统托盘图标
+    /// </summary>
+    private static void InitializeNotifyIcon()
+    {
+        try
+        {
+            // 创建托盘图标
+            _notifyIcon = new NotifyIcon
+            {
+                Icon = System.Drawing.SystemIcons.Application,
+                Text = "班级屏幕锁管理系统",
+                Visible = true
+            };
+            
+            // 创建上下文菜单
+            var contextMenu = new ContextMenuStrip();
+            
+            // 显示主窗口菜单项
+            var showMenuItem = new ToolStripMenuItem("显示主窗口");
+            showMenuItem.Click += (s, e) => ShowMainWindow();
+            contextMenu.Items.Add(showMenuItem);
+            
+            contextMenu.Items.Add(new ToolStripSeparator());
+            
+            // 锁定屏幕菜单项
+            var lockMenuItem = new ToolStripMenuItem("锁定屏幕");
+            lockMenuItem.Click += (s, e) => LockScreen();
+            contextMenu.Items.Add(lockMenuItem);
+            
+            contextMenu.Items.Add(new ToolStripSeparator());
+            
+            // 退出菜单项
+            var exitMenuItem = new ToolStripMenuItem("退出");
+            exitMenuItem.Click += (s, e) => Current.Shutdown();
+            contextMenu.Items.Add(exitMenuItem);
+            
+            // 设置上下文菜单
+            _notifyIcon.ContextMenuStrip = contextMenu;
+            
+            // 双击托盘图标显示主窗口
+            _notifyIcon.DoubleClick += (s, e) => ShowMainWindow();
+        }
+        catch (Exception ex)
+        {
+            LogMessage($"初始化系统托盘失败: {ex.Message}");
+        }
+    }
+    
+    /// <summary>
+    /// 显示主窗口
+    /// </summary>
+    private static void ShowMainWindow()
+    {
+        try
+        {
+            // 获取主窗口
+            var mainWindow = Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            
+            if (mainWindow != null)
+            {
+                // 如果窗口已最小化，恢复窗口状态
+                if (mainWindow.WindowState == WindowState.Minimized)
+                {
+                    mainWindow.WindowState = WindowState.Normal;
+                }
+                
+                // 激活并显示窗口
+                mainWindow.Show();
+                mainWindow.Activate();
+                mainWindow.Topmost = true;
+                mainWindow.Topmost = false;
+                mainWindow.Focus();
+            }
+        }
+        catch (Exception ex)
+        {
+            LogMessage($"显示主窗口失败: {ex.Message}");
+        }
+    }
+    
+    /// <summary>
+    /// 锁定屏幕
+    /// </summary>
+    private static void LockScreen()
+    {
+        try
+        {
+            // 获取主窗口
+            var mainWindow = Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            
+            if (mainWindow != null)
+            {
+                // 调用主窗口的锁定屏幕方法
+                var lockMethodInfo = mainWindow.GetType().GetMethod("LockScreenBtn_Click", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                
+                if (lockMethodInfo != null)
+                {
+                    lockMethodInfo.Invoke(mainWindow, new object[] { null, null });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            LogMessage($"锁定屏幕失败: {ex.Message}");
+        }
+    }
+    
+    /// <summary>
+    /// 获取托盘图标实例
+    /// </summary>
+    public static NotifyIcon? NotifyIcon => _notifyIcon;
 }

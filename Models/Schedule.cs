@@ -39,6 +39,11 @@ public class ClassInfo
     /// 教师
     /// </summary>
     public string Teacher { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// 是否为课间休息
+    /// </summary>
+    public bool IsBreakTime { get; set; } = false;
 }
 
 /// <summary>
@@ -63,7 +68,11 @@ public class Schedule
     /// <returns>当天课程列表</returns>
     public List<ClassInfo> GetClassesForDay(DateTime date)
     {
-        return Classes.Where(c => c.DayOfWeek == (int)date.DayOfWeek).OrderBy(c => c.StartTime).ToList();
+        // 转换DateTime.DayOfWeek（0-6，0表示星期日）为1-7（1表示星期一）
+        int dayOfWeek = (int)date.DayOfWeek;
+        if (dayOfWeek == 0) dayOfWeek = 7; // 将星期日转换为7
+        
+        return Classes.Where(c => c.DayOfWeek == dayOfWeek).OrderBy(c => c.StartTime).ToList();
     }
     
     /// <summary>
@@ -107,4 +116,136 @@ public class Schedule
         
         return false;
     }
+    
+    /// <summary>
+    /// 获取当前时间状态信息
+    /// </summary>
+    /// <param name="currentTime">当前时间</param>
+    /// <returns>时间状态信息</returns>
+    public TimeStatusInfo GetCurrentTimeStatus(DateTime currentTime)
+    {
+        var todayClasses = GetClassesForDay(currentTime);
+        var currentTimeOfDay = currentTime.TimeOfDay;
+        
+        var isBreakTime = IsBreakTime(currentTime);
+        
+        // 如果是课间时间
+        if (isBreakTime)
+        {
+            if (todayClasses.Count == 0)
+            {
+                // 当天没有课程
+                return new TimeStatusInfo
+                {
+                    IsBreakTime = true,
+                    CurrentClass = null,
+                    PreviousClass = null,
+                    NextClass = null,
+                    StatusDescription = "今天没有课程"
+                };
+            }
+            
+            if (currentTimeOfDay < todayClasses.First().StartTime)
+            {
+                // 当前时间在第一节课之前
+                return new TimeStatusInfo
+                {
+                    IsBreakTime = true,
+                    CurrentClass = null,
+                    PreviousClass = null,
+                    NextClass = todayClasses.First(),
+                    StatusDescription = "第一节课开始前"
+                };
+            }
+            
+            if (currentTimeOfDay > todayClasses.Last().EndTime)
+            {
+                // 当前时间在最后一节课之后
+                return new TimeStatusInfo
+                {
+                    IsBreakTime = true,
+                    CurrentClass = null,
+                    PreviousClass = todayClasses.Last(),
+                    NextClass = null,
+                    StatusDescription = "最后一节课结束后"
+                };
+            }
+            
+            // 当前时间在课程之间的间隙
+            for (int i = 0; i < todayClasses.Count - 1; i++)
+            {
+                if (currentTimeOfDay > todayClasses[i].EndTime && currentTimeOfDay < todayClasses[i + 1].StartTime)
+                {
+                    return new TimeStatusInfo
+                    {
+                        IsBreakTime = true,
+                        CurrentClass = null,
+                        PreviousClass = todayClasses[i],
+                        NextClass = todayClasses[i + 1],
+                        StatusDescription = $"第{i + 1}节课与第{i + 2}节课之间的课间休息"
+                    };
+                }
+            }
+        }
+        
+        // 如果是上课时间，找到当前正在上的课程
+        var currentClass = todayClasses.FirstOrDefault(c => 
+            currentTimeOfDay >= c.StartTime && currentTimeOfDay <= c.EndTime);
+        
+        if (currentClass != null)
+        {
+            var classIndex = todayClasses.IndexOf(currentClass);
+            
+            return new TimeStatusInfo
+            {
+                IsBreakTime = false,
+                CurrentClass = currentClass,
+                PreviousClass = classIndex > 0 ? todayClasses[classIndex - 1] : null,
+                NextClass = classIndex < todayClasses.Count - 1 ? todayClasses[classIndex + 1] : null,
+                StatusDescription = $"正在上第{classIndex + 1}节课：{currentClass.ClassName}"
+            };
+        }
+        
+        // 默认情况
+        return new TimeStatusInfo
+        {
+            IsBreakTime = true,
+            CurrentClass = null,
+            PreviousClass = null,
+            NextClass = null,
+            StatusDescription = "未知状态"
+        };
+    }
+}
+
+/// <summary>
+/// 时间状态信息类
+/// 用于更详细地描述当前的时间状态（上课或课间休息）
+/// </summary>
+public class TimeStatusInfo
+{
+    /// <summary>
+    /// 是否为课间时间
+    /// </summary>
+    public bool IsBreakTime { get; set; }
+    
+    /// <summary>
+    /// 当前课程（如果是上课时间）
+    /// </summary>
+    public ClassInfo? CurrentClass { get; set; }
+    
+    /// <summary>
+    /// 上一节课（如果是课间休息时间）
+    /// </summary>
+    public ClassInfo? PreviousClass { get; set; }
+    
+    /// <summary>
+    /// 下一节课（如果是课间休息时间）
+    /// </summary>
+    public ClassInfo? NextClass { get; set; }
+    
+    /// <summary>
+    /// 状态描述
+    /// </summary>
+    public string StatusDescription { get; set; } = string.Empty;
 }

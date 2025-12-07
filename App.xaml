@@ -3,15 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:CCLS"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             StartupUri="MainWindow.xaml">
+             Startup="Application_Startup">
     <Application.Resources>
         <ResourceDictionary>
-            <!-- 动态字体资源 -->
-            <FontFamily x:Key="CurrentConfigFontFamily">Segoe UI</FontFamily>
+            <!-- 动态字体资源 - 使用系统默认字体 -->
+            <FontFamily x:Key="CurrentConfigFontFamily">Microsoft YaHei UI</FontFamily>
             <sys:Double x:Key="CurrentConfigFontSize">14</sys:Double>
             
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Win11Styles.xaml"/>
+                <ResourceDictionary Source="Styles/MetroStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

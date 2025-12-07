@@ -51,10 +51,21 @@ public class ScheduleService
     public ScheduleService(ApplicationConfig config)
     {
         _config = config;
-        _currentSchedule = new Schedule();
         
-        // 初始化定时器，每分钟执行一次检查
-        _timer = new Timer(60000); // 1分钟
+        // 尝试加载时间表
+        try
+        {
+            _currentSchedule = CCLS.Utilities.ConfigManager.LoadSchedule();
+            Console.WriteLine($"[ScheduleService] 成功加载时间表，包含 {_currentSchedule.Classes.Count} 个课程");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ScheduleService] 加载时间表失败: {ex.Message}");
+            _currentSchedule = new Schedule();
+        }
+        
+        // 初始化定时器，每30秒执行一次检查，提高响应速度
+        _timer = new Timer(30000); // 30秒
         _timer.Elapsed += OnTimerElapsed;
         _timer.AutoReset = true;
         
@@ -110,6 +121,8 @@ public class ScheduleService
         bool isBreakTime = _currentSchedule.IsBreakTime(now);
         var previousTimeType = CurrentTimeType;
         
+        Console.WriteLine($"[ScheduleService] 当前时间: {now:HH:mm:ss}, 判断为课间: {isBreakTime}, 上一状态: {previousTimeType}");
+        
         if (isBreakTime)
         {
             CurrentTimeType = TimeType.BreakTime;
@@ -117,6 +130,7 @@ public class ScheduleService
             // 如果时间类型发生变化，触发课间时间开始事件
             if (previousTimeType != TimeType.BreakTime)
             {
+                Console.WriteLine("[ScheduleService] 触发课间时间开始事件");
                 BreakTimeStarted?.Invoke(this, EventArgs.Empty);
             }
             
@@ -130,6 +144,7 @@ public class ScheduleService
             // 如果时间类型发生变化，触发上课时间开始事件
             if (previousTimeType != TimeType.ClassTime)
             {
+                Console.WriteLine("[ScheduleService] 触发上课时间开始事件");
                 ClassTimeStarted?.Invoke(this, EventArgs.Empty);
             }
         }

@@ -79,8 +79,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             // 订阅事件
             SubscribeToEvents();
             
+            // 添加窗口状态改变事件处理
+            this.StateChanged += MainWindow_StateChanged;
+            
             // 记录日志
             LogMessage("系统启动完成");
+            
+            // 检查是否需要在启动时最小化到托盘
+            if (_config?.MinimizeToTrayOnStartup == true)
+            {
+                this.WindowState = WindowState.Minimized;
+                this.Hide();
+                ShowBalloonTip("班级屏幕锁", "程序已在系统托盘运行");
+                LogMessage("程序已最小化到系统托盘");
+            }
         }
         catch (Exception ex)
         {
@@ -103,7 +115,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             ConfigManager.SaveConfig(_config);
             
             // 创建默认课表
-            _schedule = CreateDefaultSchedule();
             ConfigManager.SaveSchedule(_schedule);
             
             // 创建默认密码
@@ -134,97 +145,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         // 加载密码
         _passwords = ConfigManager.LoadPasswords();
     }
-    
-    /// <summary>
-    /// 创建默认课表
-    /// </summary>
-    /// <returns>默认课表</returns>
-    private Schedule CreateDefaultSchedule()
-    {
-        var schedule = new Schedule();
-        schedule.AutoUnlockAdvanceMinutes = 3;
-        
-        // 添加周一至周五的课程
-        var daysOfWeek = new[] { 1, 2, 3, 4, 5 }; // 1-5代表周一到周五
-        
-        foreach (var day in daysOfWeek)
-        {
-            // 第一节课 8:00-8:45
-            schedule.Classes.Add(new ClassInfo
-            {
-                ClassId = schedule.Classes.Count + 1,
-                ClassName = "早读",
-                DayOfWeek = day,
-                StartTime = new TimeSpan(8, 0, 0),
-                EndTime = new TimeSpan(8, 45, 0),
-                Classroom = "本班教室",
-                Teacher = "班主任"
-            });
-            
-            // 第二节课 8:55-9:40
-            schedule.Classes.Add(new ClassInfo
-            {
-                ClassId = schedule.Classes.Count + 1,
-                ClassName = "第一节课",
-                DayOfWeek = day,
-                StartTime = new TimeSpan(8, 55, 0),
-                EndTime = new TimeSpan(9, 40, 0),
-                Classroom = "本班教室",
-                Teacher = "任课老师"
-            });
-            
-            // 第三节课 10:00-10:45
-            schedule.Classes.Add(new ClassInfo
-            {
-                ClassId = schedule.Classes.Count + 1,
-                ClassName = "第二节课",
-                DayOfWeek = day,
-                StartTime = new TimeSpan(10, 0, 0),
-                EndTime = new TimeSpan(10, 45, 0),
-                Classroom = "本班教室",
-                Teacher = "任课老师"
-            });
-            
-            // 第四节课 10:55-11:40
-            schedule.Classes.Add(new ClassInfo
-            {
-                ClassId = schedule.Classes.Count + 1,
-                ClassName = "第三节课",
-                DayOfWeek = day,
-                StartTime = new TimeSpan(10, 55, 0),
-                EndTime = new TimeSpan(11, 40, 0),
-                Classroom = "本班教室",
-                Teacher = "任课老师"
-            });
-            
-            // 第五节课 14:00-14:45
-            schedule.Classes.Add(new ClassInfo
-            {
-                ClassId = schedule.Classes.Count + 1,
-                ClassName = "第四节课",
-                DayOfWeek = day,
-                StartTime = new TimeSpan(14, 0, 0),
-                EndTime = new TimeSpan(14, 45, 0),
-                Classroom = "本班教室",
-                Teacher = "任课老师"
-            });
-            
-            // 第六节课 14:55-15:40
-            schedule.Classes.Add(new ClassInfo
-            {
-                ClassId = schedule.Classes.Count + 1,
-                ClassName = "第五节课",
-                DayOfWeek = day,
-                StartTime = new TimeSpan(14, 55, 0),
-                EndTime = new TimeSpan(15, 40, 0),
-                Classroom = "本班教室",
-                Teacher = "任课老师"
-            });
-        }
-        
-        return schedule;
-    }
-    
+
     /// <summary>
     /// 创建默认密码
     /// </summary>
@@ -272,19 +193,14 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _screenLockService = new ScreenLockService(_config, _scheduleService, _passwordService);
         _processProtectionService = new ProcessProtectionService(_config);
         
+        // 订阅屏幕锁定服务的状态变化事件
+        _screenLockService.StateChanged += OnStateChanged;
+        
         // 确保课表已加载
         if (_schedule == null || _schedule.Classes.Count == 0)
         {
             LogMessage("课表为空，尝试重新加载...");
             _schedule = ConfigManager.LoadSchedule();
-            
-            // 如果仍然为空，创建默认课表
-            if (_schedule == null || _schedule.Classes.Count == 0)
-            {
-                LogMessage("创建默认课表...");
-                _schedule = CreateDefaultSchedule();
-                ConfigManager.SaveSchedule(_schedule);
-            }
         }
         
         // 设置课表
@@ -296,13 +212,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             LogMessage("密码列表为空，尝试重新加载...");
             _passwords = ConfigManager.LoadPasswords();
             
-            // 如果仍然为空，创建默认密码
-            if (_passwords == null || _passwords.Count == 0)
-            {
-                LogMessage("创建默认密码...");
-                _passwords = CreateDefaultPasswords();
-                ConfigManager.SavePasswords(_passwords);
-            }
         }
         
         // 设置密码列表
@@ -310,6 +219,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         
         // 启动服务
         _scheduleService.Start();
+        Console.WriteLine("[MainWindow] ScheduleService已启动");
+        
+        // 立即执行一次状态检查
+        _scheduleService.ManualCheck();
+        Console.WriteLine("[MainWindow] 已执行手动状态检查");
+        
         _processProtectionService.Start();
     }
     
@@ -326,9 +241,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         
         // 更新配置显示
         UpdateConfigDisplay();
-        
-        // 初始化顶部时间显示
-        UpdateTimeDisplay();
     }
     
     /// <summary>
@@ -341,11 +253,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         _uiUpdateTimer.Interval = TimeSpan.FromSeconds(1);
         _uiUpdateTimer.Tick += OnUiUpdateTimerTick;
         _uiUpdateTimer.Start();
+        Console.WriteLine("[MainWindow] UI更新定时器已启动 (1秒间隔)");
         
         // 时间检查定时器
-        _timeCheckTimer = new System.Timers.Timer(60000); // 每分钟检查一次
+        _timeCheckTimer = new System.Timers.Timer(30000); // 每30秒检查一次
         _timeCheckTimer.Elapsed += OnTimeCheckTimerElapsed;
         _timeCheckTimer.Start();
+        Console.WriteLine("[MainWindow] 时间检查定时器已启动 (30秒间隔)");
     }
     
     /// <summary>
@@ -359,6 +273,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _scheduleService.BreakTimeStarted += OnBreakTimeStarted;
             _scheduleService.ClassTimeStarted += OnClassTimeStarted;
             _scheduleService.AutoUnlockTriggered += OnAutoUnlockTriggered;
+            Console.WriteLine("[MainWindow] 已订阅ScheduleService事件");
+        }
+        else
+        {
+            Console.WriteLine("[MainWindow] ScheduleService为null，无法订阅事件");
         }
         
         // 订阅屏幕锁定服务事件
@@ -367,6 +286,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _screenLockService.ScreenLocked += OnScreenLocked;
             _screenLockService.ScreenUnlocked += OnScreenUnlocked;
             _screenLockService.StateChanged += OnStateChanged;
+            Console.WriteLine("[MainWindow] 已订阅ScreenLockService事件");
+        }
+        else
+        {
+            Console.WriteLine("[MainWindow] ScreenLockService为null，无法订阅事件");
         }
     }
     
@@ -420,14 +344,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             ApplicationState.BreakTime => "课间休息",
             ApplicationState.Locked => "屏幕已锁定",
             ApplicationState.Configuring => "配置中",
+            ApplicationState.ClassTime => "上课时间",
             _ => "未知状态"
         };
         
         // 更新当前时间
-        CurrentTimeText.Text = DateTime.Now.ToString("HH:mm:ss");
-        TimeStatusBarText.Text = DateTime.Now.ToString("HH:mm:ss");
+        var now = DateTime.Now;
+        CurrentTimeText.Text = now.ToString("HH:mm:ss");
+        CurrentDateText.Text = now.ToString("yyyy年M月d日 dddd");
+        TimeStatusBarText.Text = now.ToString("HH:mm:ss");
         
-        // 更新时段类型
+        // 从ScheduleService获取最新的时间状态
         _currentTimeSlot = _scheduleService?.CurrentTimeType ?? TimeType.BreakTime;
         TimeSlotText.Text = _currentTimeSlot switch
         {
@@ -436,19 +363,13 @@ public partial class MainWindow : Window, INotifyPropertyChanged
             _ => "未知时段"
         };
         
-        // 更新下一节课信息
-        var nextClass = _scheduleService?.NextClass;
-        NextClassText.Text = nextClass != null 
-            ? $"{nextClass.ClassName} ({nextClass.StartTime:HH:mm}-{nextClass.EndTime:HH:mm})"
-            : "无";
     }
     
     /// <summary>
     /// 更新配置显示
     /// </summary>
     private void UpdateConfigDisplay()
-    {
-        // 更新配置显示
+    {// 更新配置显示
         if (_config != null)
         {
             AutoLockCheckBox.IsChecked = _config.EnableAutoLock;
@@ -458,26 +379,17 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
     
     /// <summary>
-    /// 更新时间显示
-    /// </summary>
-    private void UpdateTimeDisplay()
-    {
-        // 更新顶部时间显示
-        CurrentTimeText.Text = DateTime.Now.ToString("HH:mm:ss");
-        
-        // 更新日期显示
-        CurrentDateText.Text = DateTime.Now.ToString("yyyy年MM月dd日 dddd");
-    }
-    
-    /// <summary>
     /// UI更新定时器事件
     /// </summary>
     /// <param name="sender">发送者</param>
     /// <param name="e">事件参数</param>
     private void OnUiUpdateTimerTick(object? sender, EventArgs e)
     {
-        UpdateStatusDisplay();
-        UpdateTimeDisplay();
+        // 使用Dispatcher.Invoke确保UI更新在主线程执行
+        Dispatcher.Invoke(() =>
+        {
+            UpdateStatusDisplay();
+        });
     }
     
     /// <summary>
@@ -498,6 +410,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// <param name="e">事件参数</param>
     private void OnBreakTimeStarted(object? sender, EventArgs e)
     {
+        Console.WriteLine("[MainWindow] 接收到课间时间开始事件");
         LogMessage("课间休息时间开始");
         StatusBarText.Text = "课间休息时间";
     }
@@ -509,6 +422,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// <param name="e">事件参数</param>
     private void OnClassTimeStarted(object? sender, EventArgs e)
     {
+        Console.WriteLine("[MainWindow] 接收到上课时间开始事件");
         LogMessage("上课时间开始");
         StatusBarText.Text = "上课时间";
     }
@@ -683,26 +597,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void VerifyPasswordBtn_Click(object sender, RoutedEventArgs e)
     {
         ShowPasswordVerificationWindow();
-    }
-    
-    /// <summary>
-    /// 清空日志按钮点击事件
-    /// </summary>
-    /// <param name="sender">发送者</param>
-    /// <param name="e">事件参数</param>
-    private void ClearLogBtn_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            LogText.Text = "";
-            LogMessage("日志已清空");
-            StatusBarText.Text = "日志已清空";
-        }
-        catch (Exception ex)
-        {
-            LogMessage($"清空日志失败: {ex.Message}");
-            MessageBox.Show($"清空日志失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
     }
     
     /// <summary>
@@ -925,8 +819,21 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     }
 
     /// <summary>
-    /// 密码管理按钮点击事件
-    /// </summary>
+        /// 最小化到托盘按钮点击事件
+        /// </summary>
+        private void MinimizeToTrayBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // 最小化窗口并隐藏到托盘
+            this.WindowState = WindowState.Minimized;
+            this.Hide();
+            
+            // 显示托盘提示
+            ShowBalloonTip("班级屏幕锁", "程序已最小化到系统托盘，双击托盘图标可重新打开窗口。");
+        }
+        
+        /// <summary>
+        /// 密码管理按钮点击事件
+        /// </summary>
     private void PasswordManagerBtn_Click(object sender, RoutedEventArgs e)
     {
         ShowPasswordManager();
@@ -1539,6 +1446,9 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                 // 更新应用程序当前配置
                 App.CurrentConfig = _config;
                 
+                // 更新动态资源（确保字体设置生效）
+                App.UpdateDynamicResources();
+                
                 // 更新服务配置
                 _scheduleService?.UpdateConfig(_config);
                 _screenLockService?.UpdateConfig(_config);
@@ -1690,7 +1600,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// <param name="e">事件参数</param>
     private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show($"班级屏幕锁管理系统 v{GetApplicationVersion()}\n\n© 2024 班级屏幕锁系统\n\n本系统用于管理班级电脑屏幕锁定，确保课间休息时间学生不使用电脑。", 
+        System.Windows.MessageBox.Show($"班级屏幕锁管理系统 v{GetApplicationVersion()}\n\n© 2024 班级屏幕锁系统\n\n本系统用于管理班级电脑屏幕锁定，确保课间休息时间学生不使用电脑。", 
             "关于", MessageBoxButton.OK, MessageBoxImage.Information);
     }
     
@@ -1712,7 +1622,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             LogMessage($"打开日志查询窗口失败: {ex.Message}");
-            MessageBox.Show($"打开日志查询窗口失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            System.Windows.MessageBox.Show($"打开日志查询窗口失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
     
@@ -1725,7 +1635,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         try
         {
-            var result = MessageBox.Show("确定要清空所有日志文件吗？\n此操作不可恢复！", "确认清空日志", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            var result = System.Windows.MessageBox.Show("确定要清空所有日志文件吗？\n此操作不可恢复！", "确认清空日志", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
                 var logDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "C", "Logs");
@@ -1737,12 +1647,12 @@ public partial class MainWindow : Window, INotifyPropertyChanged
                         File.Delete(file);
                     }
                     LogMessage("所有日志文件已清空");
-                    MessageBox.Show("日志文件清空成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    System.Windows.MessageBox.Show("日志文件清空成功！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else
                 {
                     LogMessage("日志目录不存在，无需清空");
-                    MessageBox.Show("日志目录不存在，无需清空", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                    System.Windows.MessageBox.Show("日志目录不存在，无需清空", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             else
@@ -1753,7 +1663,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             LogMessage($"清空日志失败: {ex.Message}");
-            MessageBox.Show($"清空日志失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            System.Windows.MessageBox.Show($"清空日志失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
     
@@ -1763,18 +1673,79 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     /// <param name="e">事件参数</param>
     protected override void OnClosing(CancelEventArgs e)
     {
-        // 停止定时器
-        _uiUpdateTimer?.Stop();
-        _timeCheckTimer?.Stop();
-        
-        // 释放服务资源
-        _scheduleService?.Dispose();
-        _screenLockService?.Dispose();
-        _processProtectionService?.Dispose();
-        
-        LogMessage("系统关闭");
-        
-        base.OnClosing(e);
+        try
+        {
+            // 根据配置决定是退出程序还是最小化到托盘
+            if (_config?.MinimizeToTrayOnClose == true)
+            {
+                // 取消关闭事件
+                e.Cancel = true;
+                
+                // 最小化到托盘
+                WindowState = WindowState.Minimized;
+                Hide();
+                ShowBalloonTip("班级屏幕锁管理系统", "程序已最小化到系统托盘，双击托盘图标可恢复窗口。");
+                LogMessage("窗口关闭事件被拦截，程序已最小化到系统托盘");
+            }
+            else
+            {
+                // 停止定时器
+                _uiUpdateTimer?.Stop();
+                _timeCheckTimer?.Stop();
+                
+                // 释放服务资源
+                _scheduleService?.Dispose();
+                _screenLockService?.Dispose();
+                _processProtectionService?.Dispose();
+                
+                LogMessage("系统关闭");
+                
+                base.OnClosing(e);
+            }
+        }
+        catch (Exception ex)
+        {
+            LogMessage($"窗口关闭事件处理失败: {ex.Message}");
+        }
+    }
+    
+    /// <summary>
+    /// 窗口状态改变事件处理程序
+    /// </summary>
+    /// <param name="sender">发送者</param>
+    /// <param name="e">事件参数</param>
+    private void MainWindow_StateChanged(object? sender, EventArgs e)
+    {
+        try
+        {
+            // 最小化按钮不再自动隐藏到托盘，而是正常最小化
+            // 用户可以通过点击X按钮来最小化到托盘（根据配置）
+            LogMessage($"窗口状态改变: {WindowState}");
+        }
+        catch (Exception ex)
+        {
+            LogMessage($"窗口状态改变处理失败: {ex.Message}");
+        }
+    }
+    
+    /// <summary>
+    /// 显示托盘气泡提示
+    /// </summary>
+    /// <param name="title">标题</param>
+    /// <param name="text">内容</param>
+    private void ShowBalloonTip(string title, string text)
+    {
+        try
+        {
+            if (App.NotifyIcon != null)
+            {
+                App.NotifyIcon.ShowBalloonTip(3000, title, text, System.Windows.Forms.ToolTipIcon.Info);
+            }
+        }
+        catch (Exception ex)
+        {
+            LogMessage($"显示托盘气泡提示失败: {ex.Message}");
+        }
     }
     
     /// <summary>

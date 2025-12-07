@@ -41,8 +41,8 @@ public class ProcessProtectionService : IDisposable
         _config = config;
         _currentProcessId = Process.GetCurrentProcess().Id;
         
-        // 初始化定时器，每30秒检查一次
-        _checkTimer = new System.Timers.Timer(30000);
+        // 初始化定时器，每15秒检查一次
+        _checkTimer = new System.Timers.Timer(15000);
         _checkTimer.Elapsed += OnCheckTimerElapsed;
         
         // 设置进程保护

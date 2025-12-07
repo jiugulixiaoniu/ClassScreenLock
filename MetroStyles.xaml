@@ -9,7 +9,7 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -73,10 +73,11 @@
     <Style x:Key="MetroGroupBoxStyle" TargetType="GroupBox">
         <Setter Property="BorderBrush" Value="#CCCCCC" />
         <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}" />
         <Setter Property="HeaderTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <TextBlock Foreground="#2B579A" FontWeight="Bold" FontSize="14" FontFamily="Segoe UI" Padding="0,0,0,5"/>
+                    <TextBlock Foreground="#2B579A" FontWeight="Bold" FontSize="14" Padding="0,0,0,5" FontFamily="{DynamicResource CurrentConfigFontFamily}"/>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
@@ -106,15 +107,15 @@
         <Setter Property="BorderBrush" Value="#CCCCCC" />
         <Setter Property="BorderThickness" Value="1,1,1,1" />
         <Setter Property="FontSize" Value="12" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}" />
         <Setter Property="Foreground" Value="#333333" />
         <Setter Property="Padding" Value="5" />
     </Style>
 
     <!-- Metro TextBlock Style -->
     <Style x:Key="MetroTextBlockStyle" TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}" />
         <Setter Property="Foreground" Value="#333333" />
     </Style>
 
@@ -140,13 +141,14 @@
         <Setter Property="AutoGenerateColumns" Value="False" />
         <Setter Property="IsReadOnly" Value="True" />
         <Setter Property="FontSize" Value="13" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}" />
         <Setter Property="ColumnHeaderStyle">
             <Setter.Value>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="Background" Value="#2B579A" />
                     <Setter Property="Foreground" Value="White" />
                     <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}" />
                     <Setter Property="Padding" Value="10,5" />
                     <Setter Property="BorderThickness" Value="0,0,1,0" />
                     <Setter Property="BorderBrush" Value="#FFFFFF" />
@@ -159,6 +161,7 @@
                     <Setter Property="Padding" Value="10,5" />
                     <Setter Property="BorderBrush" Value="#E0E0E0" />
                     <Setter Property="BorderThickness" Value="0,0,0,1" />
+                    <Setter Property="FontFamily" Value="{DynamicResource CurrentConfigFontFamily}" />
                 </Style>
             </Setter.Value>
         </Setter>

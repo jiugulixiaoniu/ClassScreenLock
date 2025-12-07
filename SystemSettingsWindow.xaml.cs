@@ -90,6 +90,8 @@ public partial class SystemSettingsWindow : Window
         RunAtStartupCheckBox.IsChecked = _config.RunAtStartup;
         EnableProcessProtectionCheckBox.IsChecked = _config.EnableProcessProtection;
         EnableLoggingCheckBox.IsChecked = _config.EnableLogging;
+        MinimizeToTrayOnCloseCheckBox.IsChecked = _config.MinimizeToTrayOnClose;
+        MinimizeToTrayOnStartupCheckBox.IsChecked = _config.MinimizeToTrayOnStartup;
         
         // 锁定窗口设置
         LockWindowTitleTextBox.Text = _lockWindowConfig.Title;
@@ -140,6 +142,8 @@ public partial class SystemSettingsWindow : Window
         _config.RunAtStartup = RunAtStartupCheckBox.IsChecked ?? false;
         _config.EnableProcessProtection = EnableProcessProtectionCheckBox.IsChecked ?? false;
         _config.EnableLogging = EnableLoggingCheckBox.IsChecked ?? false;
+        _config.MinimizeToTrayOnClose = MinimizeToTrayOnCloseCheckBox.IsChecked ?? true;
+        _config.MinimizeToTrayOnStartup = MinimizeToTrayOnStartupCheckBox.IsChecked ?? false;
         
         // 锁定窗口设置
         _lockWindowConfig.Title = LockWindowTitleTextBox.Text;

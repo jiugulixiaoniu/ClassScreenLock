@@ -19,6 +19,8 @@ public class ApplicationConfig : INotifyPropertyChanged
     private int _breakTimeNotificationDuration = 5;
     private string _fontFamily = "Segoe UI";
     private double _fontSize = 14;
+    private bool _minimizeToTrayOnClose = true;
+    private bool _minimizeToTrayOnStartup = false;
     private LockWindowConfig _lockWindowConfig = new LockWindowConfig();
     
     /// <summary>
@@ -209,6 +211,38 @@ public class ApplicationConfig : INotifyPropertyChanged
             { 
                 _fontSize = value; 
                 OnPropertyChanged(nameof(FontSize)); 
+            } 
+        } 
+    }
+    
+    /// <summary>
+    /// 点击关闭按钮时是否最小化到托盘
+    /// </summary>
+    public bool MinimizeToTrayOnClose 
+    { 
+        get => _minimizeToTrayOnClose; 
+        set 
+        { 
+            if (_minimizeToTrayOnClose != value) 
+            { 
+                _minimizeToTrayOnClose = value; 
+                OnPropertyChanged(nameof(MinimizeToTrayOnClose)); 
+            } 
+        } 
+    }
+    
+    /// <summary>
+    /// 启动时是否直接最小化到托盘
+    /// </summary>
+    public bool MinimizeToTrayOnStartup 
+    { 
+        get => _minimizeToTrayOnStartup; 
+        set 
+        { 
+            if (_minimizeToTrayOnStartup != value) 
+            { 
+                _minimizeToTrayOnStartup = value; 
+                OnPropertyChanged(nameof(MinimizeToTrayOnStartup)); 
             } 
         } 
     }

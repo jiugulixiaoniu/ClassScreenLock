@@ -133,21 +133,46 @@ public partial class LogViewerWindow : Window
     {
         try
         {
-            // 尝试解析标准日志格式: [时间戳] 消息
+            // 尝试解析标准日志格式: [时间戳] [级别] 消息
             if (line.StartsWith("[") && line.Contains("]"))
             {
-                var endIndex = line.IndexOf(']');
-                if (endIndex > 1)
+                var firstEndIndex = line.IndexOf(']');
+                if (firstEndIndex > 1)
                 {
-                    var timestampStr = line.Substring(1, endIndex - 1);
-                    var message = line.Substring(endIndex + 1).Trim();
+                    var timestampStr = line.Substring(1, firstEndIndex - 1);
+                    var remainingPart = line.Substring(firstEndIndex + 1).Trim();
                     
+                    // 尝试解析时间戳
                     if (DateTime.TryParse(timestampStr, out var timestamp))
                     {
+                        // 尝试提取日志级别
+                        string level = "信息";
+                        string message = remainingPart;
+                        
+                        // 检查是否有级别信息 [级别]
+                        if (remainingPart.StartsWith("[") && remainingPart.Contains("]"))
+                        {
+                            var secondEndIndex = remainingPart.IndexOf(']');
+                            if (secondEndIndex > 1)
+                            {
+                                var levelStr = remainingPart.Substring(1, secondEndIndex - 1);
+                                if (!string.IsNullOrWhiteSpace(levelStr))
+                                {
+                                    level = levelStr;
+                                    message = remainingPart.Substring(secondEndIndex + 1).Trim();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // 从消息内容推断级别
+                            level = DetermineLogLevel(remainingPart, fileName);
+                        }
+                        
                         return new LogEntry
                         {
                             Timestamp = timestamp.ToString("yyyy-MM-dd HH:mm:ss"),
-                            Level = DetermineLogLevel(message, fileName),
+                            Level = level,
                             Message = TruncateMessage(message, 100),
                             FullMessage = message
                         };
@@ -419,7 +444,9 @@ public partial class LogViewerWindow : Window
                 Width = 600,
                 Height = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = this
+                Owner = this,
+                FontFamily = new System.Windows.Media.FontFamily(App.CurrentConfig.FontFamily),
+                FontSize = App.CurrentConfig.FontSize
             };
             
             var scrollViewer = new ScrollViewer
@@ -461,7 +488,9 @@ public partial class LogViewerWindow : Window
                 IsReadOnly = true,
                 TextWrapping = TextWrapping.Wrap,
                 MinHeight = 200,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                FontFamily = new System.Windows.Media.FontFamily(App.CurrentConfig.FontFamily),
+                FontSize = App.CurrentConfig.FontSize
             });
             
             scrollViewer.Content = stackPanel;
